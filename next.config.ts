@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath: "/Vrit",
   images: {
+    unoptimized: true, // Required for static exports on GitHub Pages
     remotePatterns: [
       {
         protocol: "https",
@@ -9,7 +12,7 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
-      { protocol: "https", hostname: "cdn.dummyjson.com" }
+      { protocol: "https", hostname: "cdn.dummyjson.com" },
     ],
   },
 };
