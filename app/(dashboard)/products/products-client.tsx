@@ -9,8 +9,10 @@ import { SearchBar } from "@/components/filters/search-bar"
 import { PriceRangeFilter } from "@/components/filters/price-range-filter"
 import { SortSelect } from "@/components/filters/sort-select"
 import { ProductGridSkeleton } from "@/components/loading-states"
+import { CategoryFilter } from "@/components/filters/category-filter"
 
-const PAGE_SIZE = 8
+// const PAGE_SIZE = 10
+const PAGE_SIZE = 4
 
 interface ProductsClientProps {
   initialProducts: Product[]
@@ -73,30 +75,14 @@ export function ProductsClient({ initialProducts, categories, initialSort }: Pro
         />
 
         {/* Category Dropdown */}
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="category-select" className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Category
-          </label>
-          <select
-            id="category-select"
-            value={category ?? ""}
-            onChange={(e) => {
-              const val = e.target.value
-              setCategory(val === "" ? null : val)
-              resetToFirstPage()
-            }}
-            className="h-10 rounded-md border border-zinc-200 bg-transparent px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-950 dark:border-zinc-800 dark:text-zinc-100 dark:focus:ring-zinc-300"
-          >
-            <option value="" className="bg-white dark:bg-zinc-900">
-              All Categories
-            </option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat} className="bg-white capitalize dark:bg-zinc-900">
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+        <CategoryFilter
+  categories={categories}
+  selected={category}
+  onChange={(c) => {
+    setCategory(c)
+    resetToFirstPage()
+  }}
+/>
 
         {/* Sort Select */}
         <SortSelect value={initialSort} onChange={handleSortChange} />

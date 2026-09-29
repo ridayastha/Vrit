@@ -1,7 +1,14 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import {
+  Pagination as ShadcnPagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 interface PaginationProps {
   currentPage: number
@@ -15,47 +22,52 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
   const pages = getPageRange(currentPage, totalPages)
 
   return (
-    <nav className="flex items-center justify-center gap-1.5 pt-8" aria-label="Pagination">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        Prev
-      </Button>
+    <ShadcnPagination className="pt-8">
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              if (currentPage > 1) onPageChange(currentPage - 1)
+            }}
+            className={currentPage === 1 ? "pointer-events-none opacity-40" : ""}
+          />
+        </PaginationItem>
 
-      {pages.map((page, idx) =>
-        page === "…" ? (
-          <span key={`ellipsis-${idx}`} className="px-2 text-zinc-400">
-            …
-          </span>
-        ) : (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            aria-current={page === currentPage ? "page" : undefined}
-            className={cn(
-              "size-9 rounded-md text-sm font-medium transition",
-              page === currentPage
-                ? "bg-primary text-primary-foreground"
-                : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
-            )}
-          >
-            {page}
-          </button>
-        )
-      )}
+        {pages.map((page, idx) =>
+          page === "…" ? (
+            <PaginationItem key={`ellipsis-${idx}`}>
+              <PaginationEllipsis />
+            </PaginationItem>
+          ) : (
+            <PaginationItem key={page}>
+              <PaginationLink
+                href="#"
+                isActive={page === currentPage}
+                onClick={(e) => {
+                  e.preventDefault()
+                  onPageChange(page)
+                }}
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        )}
 
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        Next
-      </Button>
-    </nav>
+        <PaginationItem>
+          <PaginationNext
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              if (currentPage < totalPages) onPageChange(currentPage + 1)
+            }}
+            className={currentPage === totalPages ? "pointer-events-none opacity-40" : ""}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </ShadcnPagination>
   )
 }
 

@@ -35,7 +35,7 @@ export default function CartPage() {
           </Button>
         </div>
       ) : (
-        <div className="flex flex-col gap-6 lg:flex-row">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
           <div className="flex-1 border border-zinc-200 bg-white px-5 dark:border-zinc-800 dark:bg-zinc-950">
             {items.map((item) => (
               <CartItem key={item.product.id} item={item} />

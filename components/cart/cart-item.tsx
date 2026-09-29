@@ -49,7 +49,7 @@ export function CartItem({ item }: { item: CartItemType }) {
       <button
         onClick={() => removeItem(item.product.id)}
         aria-label={`Remove ${item.product.title} from cart`}
-        className="shrink-0 text-zinc-400 transition hover:text-destructive"
+        className="shrink-0 text-red-400 transition hover:text-destructive"
       >
         <RiDeleteBin5Line className="size-5" />
       </button>

@@ -36,7 +36,7 @@ export default function Header() {
               <RiShoppingCartLine className="size-5" />
             </Button>
             {hasMounted && totalItems > 0 && (
-              <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+              <span className="absolute rounded-xs -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-destructive text-white text-[10px] font-bold text-primary-foreground">
                 {totalItems}
               </span>
             )}

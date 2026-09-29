@@ -67,7 +67,7 @@ export default function AppSidebar() {
                 </CardHeader>
                 <CardContent className="p-4 pt-0 pl-12">
                     {/* REVERTED: Removed manual text-white to let standard button foreground fill handle it */}
-                    <Button variant="default" className="w-full h-9 text-xs font-medium shadow-sm">
+                    <Button variant="default" className="w-full text-white h-9 text-xs font-medium shadow-sm">
                         Upgrade now
                     </Button>
                 </CardContent>
