@@ -11,8 +11,7 @@ import { SortSelect } from "@/components/filters/sort-select"
 import { ProductGridSkeleton } from "@/components/loading-states"
 import { CategoryFilter } from "@/components/filters/category-filter"
 
-// const PAGE_SIZE = 10
-const PAGE_SIZE = 4
+const PAGE_SIZE = 10
 
 interface ProductsClientProps {
   initialProducts: Product[]

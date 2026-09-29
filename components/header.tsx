@@ -26,10 +26,7 @@ export default function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
-        
-          <Button variant="ghost" size="icon" aria-label="Notifications">
-            <RiNotification3Line className="size-5" />
-          </Button>
+      
 
           <Link href="/cart" className="relative">
             <Button variant="ghost" size="icon" aria-label="Cart">
