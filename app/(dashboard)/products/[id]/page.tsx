@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { RiArrowLeftLine, RiStarFill, RiStarLine } from "@remixicon/react"
-import { getProduct } from "@/lib/api/products"
+import { getProduct, getProducts } from "@/lib/api/products"
 import { ApiError } from "@/lib/api/types"
 import { formatPrice, capitalize } from "@/lib/format"
 import { AddToCartButton } from "@/components/cart/add-to-cart-button"
@@ -23,6 +23,19 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     }
   } catch {
     return { title: "Product" }
+  }
+}
+
+// Add generateStaticParams for static export support
+export async function generateStaticParams() {
+  try {
+    const products = await getProducts()
+    return products.map((product) => ({
+      id: String(product.id),
+    }))
+  } catch {
+    // If fetching fails during build, pre-render fallback IDs 1 through 5
+    return [{ id: "1" }, { id: "2" }, { id: "3" }, { id: "4" }, { id: "5" }]
   }
 }
 
