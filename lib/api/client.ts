@@ -3,7 +3,10 @@ import { ApiError, Product, Category } from "./types"
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://fakestoreapi.com"
 const DEFAULT_TIMEOUT_MS = 10_000
 
-// Fallback data used when FakeStoreAPI is down (Status 523 / Origin Unreachable)
+// Handles GitHub Pages subfolder deployment (/Vrit)
+const BASE_PATH = process.env.NODE_ENV === "production" ? "/Vrit" : ""
+
+// Fallback data used when FakeStoreAPI is down or returning 403
 const MOCK_PRODUCTS: Product[] = [
   {
     id: 1,
@@ -11,7 +14,7 @@ const MOCK_PRODUCTS: Product[] = [
     price: 109.95,
     description: "Your everyday pack for essentials. Padded back panel and shoulder straps.",
     category: "men's clothing",
-    image: "/products/shoes.png",
+    image: `${BASE_PATH}/products/shoes.png`,
     rating: { rate: 3.9, count: 120 }
   },
   {
@@ -20,7 +23,7 @@ const MOCK_PRODUCTS: Product[] = [
     price: 22.3,
     description: "Slim-fit style, contrast raglan long sleeve, three-button henley placket.",
     category: "men's clothing",
-    image: "/products/tshirt.gif",
+    image: `${BASE_PATH}/products/tshirt.gif`,
     rating: { rate: 4.1, count: 259 }
   },
   {
@@ -29,7 +32,7 @@ const MOCK_PRODUCTS: Product[] = [
     price: 55.99,
     description: "Great outerwear hoodie for Spring, suitable for many occasions.",
     category: "men's clothing",
-    image: "/products/Printed hoodie.gif",
+    image: `${BASE_PATH}/products/Printed hoodie.gif`,
     rating: { rate: 4.7, count: 500 }
   },
   {
@@ -38,7 +41,7 @@ const MOCK_PRODUCTS: Product[] = [
     price: 55.99,
     description: "Great outerwear hoodie for Spring/Autumn/Winter, suitable for many occasions.",
     category: "women's clothing",
-    image: "/products/hoodie.gif",
+    image: `${BASE_PATH}/products/hoodie.gif`,
     rating: { rate: 4.7, count: 500 }
   },
   {
@@ -47,7 +50,7 @@ const MOCK_PRODUCTS: Product[] = [
     price: 55.99,
     description: "Great outerwear hoodie for Spring/Autumn/Winter, suitable for many occasions.",
     category: "men's clothing",
-    image: "/products/3d shoe.gif",
+    image: `${BASE_PATH}/products/3d shoe.gif`,
     rating: { rate: 4.7, count: 500 }
   }
 ];
@@ -85,7 +88,7 @@ function buildUrl(path: string, params?: ApiClientOptions["params"]): string {
 }
 
 /**
- * Fallback helper when FakeStoreAPI is unreachable (e.g. status 523/5xx or network errors)
+ * Fallback helper when FakeStoreAPI is unreachable (e.g. status 403/5xx or network errors)
  */
 function handleFallback<T>(path: string): T {
   console.warn(`[API Fallback] API unreachable for path: "${path}". Serving mock data.`);
@@ -114,7 +117,6 @@ export async function apiFetch<T>(path: string, options: ApiClientOptions = {}):
       next,
       headers: {
         "Content-Type": "application/json",
-        // Standard User-Agent header to bypass Cloudflare 403 blocks in automated environments
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         ...headers,
       },
@@ -123,7 +125,6 @@ export async function apiFetch<T>(path: string, options: ApiClientOptions = {}):
     })
 
     if (!response.ok) {
-      // Trigger fallback if API returns 403 (Forbidden) or 5xx server errors
       if (response.status === 403 || response.status >= 500) {
         return handleFallback<T>(path)
       }
@@ -141,8 +142,10 @@ export async function apiFetch<T>(path: string, options: ApiClientOptions = {}):
     if (!text) return undefined as T
     return JSON.parse(text) as T
   } catch (err) {
-    if (err instanceof ApiError) throw err
-    // Catch timeouts, network errors, or fetch failures and return fallback mock data
+    if (err instanceof ApiError) {
+      if (err.status === 403) return handleFallback<T>(path)
+      throw err
+    }
     return handleFallback<T>(path)
   } finally {
     clearTimeout(timeout)
